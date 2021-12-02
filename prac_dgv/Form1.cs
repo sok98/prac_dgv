@@ -21,7 +21,7 @@ namespace prac_dgv
         List<CParent> _SelectParent { get; set; }
         List<CChild> _SelectChild { get; set; }
 
-        int _Pidx = 0;
+        int _Pidx = 0;  // 부모 네이밍 인덱스
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -56,6 +56,50 @@ namespace prac_dgv
             // 선택한 부모에 맞춰 자식 리스트 업데이트
             UpdateChild();
         }
+        /// <summary>
+        /// 부모 병합 버튼
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnPMerge_Click(object sender, EventArgs e)
+        {
+            CParent mainP = dgvParent.SelectedRows[dgvParent.SelectedRows.Count - 1].Tag as CParent;
+
+            foreach (CParent cp in dgvParent.SelectedRows)
+            {
+                if (cp != mainP)
+                {
+                    mainP.CList.AddRange(cp.CList);
+                    _PGroup.PList.Remove(cp);
+                }
+            }
+            // 부모 리스트 업데이트
+            UpdateParent();
+
+            // mainP에 포커스 맞추기
+            foreach (DataGridViewRow row in dgvParent.Rows)
+            {
+                if (row.Tag == mainP)
+                {
+                    dgvParent.CurrentCell = dgvParent.Rows[row.Index].Cells[1];
+                }
+            }
+        }
+        /// <summary>
+        /// 부모 삭제 버튼
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnPDel_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow cp in dgvParent.SelectedRows)
+            {
+                _PGroup.PList.Remove((CParent)cp.Tag);
+            }
+            // 부모 리스트 업데이트
+            UpdateParent();
+            dgvParent.CurrentCell = dgvParent.Rows[0].Cells[1];
+        }
 
         /// <summary>
         /// 자식 추가 버튼
@@ -80,6 +124,104 @@ namespace prac_dgv
             DisplayParent();    // 선택한 부모 count 업데이트
             UpdateChild();
         }
+        /// <summary>
+        /// 자식 분리 버튼 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnCSep_Click(object sender, EventArgs e)
+        {
+            if (dgvParent.SelectedRows.Count != 1)
+            {
+                MessageBox.Show("부모를 하나만 선택하세요.");
+                return;
+            }
+
+            CParent cp = new CParent(string.Format("분리 (from {0})", dgvParent.SelectedRows[0].Cells[2].Value.ToString()));
+            foreach (CChild cc in _SelectChild)
+            {
+                cp.CList.Add(cc);
+                _PGroup.PList[dgvParent.SelectedRows[0].Index].CList.Remove(cc);
+            }
+            // 새로운 부모 추가
+            _PGroup.PList.Add(cp);
+            
+            // 부모 리스트 업데이트
+            UpdateParent();
+           
+            // 새로운 부모에 포커싱
+            dgvParent.CurrentCell = dgvParent.Rows[dgvParent.RowCount - 1].Cells[1];
+            
+            // 자식 리스트 업데이트
+            UpdateChild();
+        }
+        /// <summary>
+        /// 자식 삭제 버튼
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnCDel_Click(object sender, EventArgs e)
+        {
+            if (dgvParent.SelectedRows.Count != 1)
+            {
+                MessageBox.Show("부모를 하나만 선택하세요.");
+                return;
+            }
+            if (dgvChild.SelectedRows.Count == dgvChild.RowCount)
+            {
+                MessageBox.Show("모두 삭제하려면\n부모 삭제를 이용해야 합니다.");
+                return;
+            }
+
+            foreach (CChild cc in _SelectChild)
+            {
+                _PGroup.PList[dgvParent.SelectedRows[0].Index].CList.Remove(cc);
+            }
+            // 부모 리스트 Count 업데이트
+            DisplayParent();
+
+            // 자식 리스트 업데이트
+            UpdateChild();
+        }
+
+
+        #region -- Select --
+        /// <summary>
+        /// 부모 리스트 Select
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvParent_Select(object sender = null, EventArgs e = null)
+        {
+            // _SelectParent 초기화 후 추가
+            _SelectParent.Clear();
+            foreach (DataGridViewRow row in dgvParent.SelectedRows)
+            {
+                _SelectParent.Add((CParent)row.Tag);
+            }
+
+            // 선택 부모 있으면 자식 리스트 업데이트
+            if (_SelectParent.Count != 0 && _SelectParent[0] != null)
+            {
+                UpdateChild();
+            }
+        }
+
+        /// <summary>
+        /// 자식 리스트 Select
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvChild_Select(object sender = null, EventArgs e = null)
+        {
+            // _SelectChild 초기화 후 추가
+            _SelectChild.Clear();
+            foreach (DataGridViewRow row in dgvChild.SelectedRows)
+            {
+                _SelectChild.Add((CChild)row.Tag);
+            }
+        }
+        #endregion
 
         #region -- Update, Display --
         /// <summary>
@@ -144,29 +286,5 @@ namespace prac_dgv
         }
         #endregion
 
-        private void dgvParent_Select(object sender = null, EventArgs e = null)
-        {
-            // _SelectParent 초기화 후 추가
-            _SelectParent.Clear();
-            foreach (DataGridViewRow row in dgvParent.SelectedRows)
-            {
-                _SelectParent.Add((CParent)row.Tag);
-            }
-            // 선택 부모 있으면 자식 리스트 업데이트
-            if (_SelectParent.Count != 0 && _SelectParent[0] != null)
-            {
-                UpdateChild();
-            }
-        }
-
-        private void dgvChild_Select(object sender = null, EventArgs e = null)
-        {
-            // _SelectChild 초기화 후 추가
-            _SelectChild.Clear();
-            foreach (DataGridViewRow row in dgvChild.SelectedRows)
-            {
-                _SelectChild.Add((CChild)row.Tag);
-            }
-        }
     }
 }

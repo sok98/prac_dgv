@@ -191,6 +191,7 @@
             this.btnPMerge.TabIndex = 2;
             this.btnPMerge.Text = "병합";
             this.btnPMerge.UseVisualStyleBackColor = true;
+            this.btnPMerge.Click += new System.EventHandler(this.btnPMerge_Click);
             // 
             // btnPDel
             // 
@@ -203,6 +204,7 @@
             this.btnPDel.TabIndex = 3;
             this.btnPDel.Text = "삭제";
             this.btnPDel.UseVisualStyleBackColor = true;
+            this.btnPDel.Click += new System.EventHandler(this.btnPDel_Click);
             // 
             // tableLayoutPanel3
             // 
@@ -239,6 +241,7 @@
             this.btnCDel.TabIndex = 5;
             this.btnCDel.Text = "삭제";
             this.btnCDel.UseVisualStyleBackColor = true;
+            this.btnCDel.Click += new System.EventHandler(this.btnCDel_Click);
             // 
             // btnCSep
             // 
@@ -251,6 +254,7 @@
             this.btnCSep.TabIndex = 4;
             this.btnCSep.Text = "분리";
             this.btnCSep.UseVisualStyleBackColor = true;
+            this.btnCSep.Click += new System.EventHandler(this.btnCSep_Click);
             // 
             // btnCAdd
             // 
