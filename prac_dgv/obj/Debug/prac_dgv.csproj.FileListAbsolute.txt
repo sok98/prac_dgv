@@ -1,0 +1,9 @@
+C:\prac_dgv\prac_dgv\bin\Debug\prac_dgv.exe.config
+C:\prac_dgv\prac_dgv\bin\Debug\prac_dgv.exe
+C:\prac_dgv\prac_dgv\bin\Debug\prac_dgv.pdb
+C:\prac_dgv\prac_dgv\obj\Debug\prac_dgv.csprojResolveAssemblyReference.cache
+C:\prac_dgv\prac_dgv\obj\Debug\prac_dgv.Form1.resources
+C:\prac_dgv\prac_dgv\obj\Debug\prac_dgv.Properties.Resources.resources
+C:\prac_dgv\prac_dgv\obj\Debug\prac_dgv.csproj.GenerateResource.Cache
+C:\prac_dgv\prac_dgv\obj\Debug\prac_dgv.exe
+C:\prac_dgv\prac_dgv\obj\Debug\prac_dgv.pdb
